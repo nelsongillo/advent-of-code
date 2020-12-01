@@ -1,22 +1,41 @@
 # calculate solution
-def solution_puzzle01(values):
+def two_values_sum_to(values, sum):
     for x in values:
-        for y in values:
-            if x + y == 2020:
-                print("Puzzle 01: ", x * y)
-                return
+        y = sum - x
+        if y in values:
+            return (x, y)
+
+    return None
+
+
+def three_values_sum_to(values, sum):
+    for x in values:
+        remainder = sum - x
+        ret = two_values_sum_to(values, remainder)
+        if ret != None:
+            (y, z) = ret
+            return (x, y, z)
+    
+    return None
+
+
+
+def solution_puzzle01(values):
+    ret = two_values_sum_to(values, 2020)
+    if ret != None:
+        (x, y) = ret
+        print("Puzzle 01: {} * {} = {}".format(x, y, x*y))
+    else:
+        print("Puzzle 01: No values found")
 
 
 def solution_puzzle02(values):
-    for x in values:
-        for y in values:
-            if x + y >= 2020:
-                continue
-
-            for z in values:
-                if x + y + z == 2020:
-                    print("Puzzle 02: ", x * y * z)
-                    return
+    ret = three_values_sum_to(values, 2020)
+    if ret != None:
+        (x, y, z) = ret
+        print("Puzzle 01: {} * {} * {} = {}".format(x, y, z, x*y*z))
+    else:
+        print("Puzzle: No values found")
 
 
 input_file = "data.txt"
@@ -24,7 +43,7 @@ input_file = "data.txt"
 file = open(input_file, "r")
 lines = file.readlines()
 
-values = [int(i) for i in lines]
+values = sorted([int(i) for i in lines])
 
 solution_puzzle01(values)
 solution_puzzle02(values)
