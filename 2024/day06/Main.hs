@@ -27,9 +27,6 @@ inBounds area (x, y) = elem y [0..height area] && elem x [0..width area]
 setObstruction :: (Ix i1, Ix i2) => Array i1 (Array i2 Char) -> (i2, i1) -> Array i1 (Array i2 Char)
 setObstruction area (x, y) = area // [(y, area ! y // [(x, '#')])]
 
-matrixIndices :: (Num a, Enum a, Num b, Enum b, Ix b) => Array b (Array a e) -> [(a, b)]
-matrixIndices m = [(i, j) | i <- [0..width m], j <- [0..height m]]
-
 incCoords :: (Int, Int) -> Direction -> (Int, Int)
 incCoords (x, y) North = (x, y - 1)
 incCoords (x, y) East = (x + 1, y)
@@ -65,7 +62,7 @@ detectLoop area =
             | count > width area * height area = True
             | canWalk a (x, y) direction = detectLoop' a (incCoords (x, y) direction) direction $ count + 1
             | inBounds a $ incCoords (x, y) direction = detectLoop' a (x, y) (toEnum $ mod (fromEnum direction + 1) 4) count
-            | otherwise = False            
+            | otherwise = False
 
 part01 :: Array Int (Array Int Char) -> Int
 part01 area = length $ walk area
@@ -73,7 +70,7 @@ part01 area = length $ walk area
 part02 :: Array Int (Array Int Char) -> Int
 part02 area = 
     let start = findStart area
-    in length $ filter id $ map (\(x, y) -> detectLoop $ if start /= (x, y) then setObstruction area (x, y) else area) $ matrixIndices area
+    in length $ filter id $ map (\(x, y) -> detectLoop $ if start /= (x, y) then setObstruction area (x, y) else area) $ walk area
 
 
 main :: IO ()
